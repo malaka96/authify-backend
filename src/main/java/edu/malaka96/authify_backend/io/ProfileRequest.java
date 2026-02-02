@@ -19,7 +19,7 @@ public class ProfileRequest {
     @Email(message = "Enter valid email address")
     @NotNull
     private String email;
-    @Min(value = 6, message = "Password must be longer than 6")
+//    @Min(value = 6, message = "Password must be longer than 6")
     private String password;
     private Boolean isAccountVarifield;
 
