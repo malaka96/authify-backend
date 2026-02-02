@@ -20,4 +20,9 @@ public class ProfileController {
         return profileService.createProfile(request);
     }
 
+    @GetMapping("/test")
+    public String greeting(){
+        return "yello, Malaka. You are Authenticated";
+    }
+
 }
