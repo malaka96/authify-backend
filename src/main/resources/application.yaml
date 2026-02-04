@@ -15,6 +15,7 @@ spring:
     show-sql: true
 
 
+
 server:
   servlet:
     context-path: /api/v1.0
