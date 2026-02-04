@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -23,13 +24,14 @@ public class JwtUtil {
     private final SecretKey secretKey;  // secure key object
 
     // Constructor generates a valid secret key
-    public JwtUtil() {
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
-            secretKey = keyGenerator.generateKey();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+    public JwtUtil(@Value("${jwt.secret}") String secret) {
+//        try {
+//            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
+//            secretKey = keyGenerator.generateKey();
+//        } catch (NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public String generateToken(UserDetails userDetails){
