@@ -4,6 +4,7 @@ import edu.malaka96.authify_backend.io.ProfileRequest;
 import edu.malaka96.authify_backend.io.ProfileResponse;
 import edu.malaka96.authify_backend.model.UserEntity;
 import edu.malaka96.authify_backend.repository.UserRepository;
+import edu.malaka96.authify_backend.service.EmailService;
 import edu.malaka96.authify_backend.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     public ProfileResponse createProfile(ProfileRequest request) {
@@ -57,7 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
         userRepository.save(existingEntity);
 
         try{
-            // todo : send the reset otp
+            emailService.sendResetOtpEmail(existingEntity.getEmail(), otp);
         }catch (Exception ex){
             throw new RuntimeException("Unable to send email: "+ex.getMessage());
         }
