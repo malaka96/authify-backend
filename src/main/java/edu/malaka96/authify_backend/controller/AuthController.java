@@ -3,18 +3,16 @@ package edu.malaka96.authify_backend.controller;
 import edu.malaka96.authify_backend.io.AuthRequest;
 import edu.malaka96.authify_backend.io.AuthResponse;
 import edu.malaka96.authify_backend.service.AuthService;
-import edu.malaka96.authify_backend.service.impl.CustomerUserDetailsService;
-import edu.malaka96.authify_backend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,5 +69,10 @@ public class AuthController {
 //    private void authenticate(String email, String password){
 //        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,password));
 //    }
+
+    @GetMapping("/isAuthenticated")
+    public ResponseEntity<Boolean> isAuthenticated(@CurrentSecurityContext(expression = "authentication?.name") String email){
+        return ResponseEntity.ok(email != null);
+    }
 
 }
