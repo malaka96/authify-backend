@@ -2,6 +2,7 @@ package edu.malaka96.authify_backend.controller;
 
 import edu.malaka96.authify_backend.io.AuthRequest;
 import edu.malaka96.authify_backend.io.AuthResponse;
+import edu.malaka96.authify_backend.io.ResetPasswordRequest;
 import edu.malaka96.authify_backend.service.AuthService;
 import edu.malaka96.authify_backend.service.ProfileService;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +80,15 @@ public class AuthController {
     public void sendResetOtp(@RequestParam String email){
         try{
             profileService.sendOtp(email);
+        }catch (Exception ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public void resetPassword(@RequestBody ResetPasswordRequest request){
+        try{
+            profileService.resetPassword(request.getEmail(), request.getOtp(), request.getNewPassword());
         }catch (Exception ex){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
