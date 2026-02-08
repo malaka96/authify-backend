@@ -96,4 +96,16 @@ public class AuthController {
         profileService.sendVerifyOtp(email);
         return ResponseEntity.ok("Verify OTP is sent");
     }
+
+    @PostMapping("/verify-otp")
+    public void verifyEmail(@RequestBody Map<String, Object> request, @CurrentSecurityContext(expression = "authentication?.name") String email){
+        if(request.get("otp").toString() == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missin details");
+        }
+        try {
+            profileService.verifyOtp(email, request.get("otp").toString());
+        } catch (ResponseStatusException exception) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
+    }
 }
