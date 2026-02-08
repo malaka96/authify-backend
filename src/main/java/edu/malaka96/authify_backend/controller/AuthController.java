@@ -86,12 +86,10 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public void resetPassword(@RequestBody ResetPasswordRequest request){
-        try{
-            profileService.resetPassword(request.getEmail(), request.getOtp(), request.getNewPassword());
-        }catch (Exception ex){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
-        }
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        profileService.resetPassword(request.getEmail(), request.getOtp(), request.getNewPassword());
+        return ResponseEntity.ok("Password reset successful");
     }
+
 
 }
