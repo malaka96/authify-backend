@@ -85,6 +85,47 @@ public class ProfileServiceImpl implements ProfileService {
         userRepository.save(existingUser);
     }
 
+    @Override
+    public void sendVerifyOtp(String email) {
+        UserEntity existingUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: "+email));
+
+        if(existingUser.getIsAccountVerified() != null && existingUser.getIsAccountVerified()){
+            return;
+        }
+
+        //generate 6 digit otp
+        String otp = String.valueOf(ThreadLocalRandom.current().nextInt(100000,1000000));
+
+        //calculate expiry time (current time + 24 hours in milliseconds)
+        long expiryTime = System.currentTimeMillis() + (24 * 60 * 60 * 1000);
+
+        //update the user entity
+        existingUser.setVerifyOtp(otp);
+        existingUser.setVerifyOtpExpireAt(expiryTime);
+
+        // save to database
+        userRepository.save(existingUser);
+
+        try{
+            emailService.sendVerifyOtpEmail(email,otp);
+        }catch (Exception ex){
+            throw new RuntimeException("Unable to send email: "+ex.getMessage());
+        }
+    }
+
+    @Override
+    public void verifyOtp(String email, String otp) {
+
+    }
+
+    @Override
+    public String getLoggedInUserId(String email) {
+        UserEntity existingUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: "+email));
+        return existingUser.getUserId();
+    }
+
     private UserEntity convertToUserEntity(ProfileRequest request){
         return UserEntity.builder()
                 .email(request.getEmail())

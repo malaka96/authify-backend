@@ -91,5 +91,9 @@ public class AuthController {
         return ResponseEntity.ok("Password reset successful");
     }
 
-
+    @PostMapping("/send-otp")
+    public ResponseEntity<String> sendVerifyOtp(@CurrentSecurityContext(expression = "authentication?.name") String email){
+        profileService.sendVerifyOtp(email);
+        return ResponseEntity.ok("Verify OTP is sent");
+    }
 }
