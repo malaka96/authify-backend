@@ -5,6 +5,7 @@ import edu.malaka96.authify_backend.io.AuthResponse;
 import edu.malaka96.authify_backend.io.ResetPasswordRequest;
 import edu.malaka96.authify_backend.service.AuthService;
 import edu.malaka96.authify_backend.service.ProfileService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpHeaders;
@@ -107,5 +108,21 @@ public class AuthController {
         } catch (ResponseStatusException exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response){
+        ResponseCookie cookie = ResponseCookie.from("jwt","")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body("Logged out successfully");
+
     }
 }
